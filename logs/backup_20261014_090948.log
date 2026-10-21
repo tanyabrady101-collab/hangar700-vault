@@ -1,0 +1,64 @@
+[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m 
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m echo "======================================================================"
+[?2004l======================================================================
+[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m echo "[+] HANGAR 700 LOCAL HARDWARE BACKUP INITIATED: ${TIMESTAMP}"
+[?2004l[+] HANGAR 700 LOCAL HARDWARE BACKUP INITIATED: 20261014_090948
+[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m echo "======================================================================"
+[?2004l======================================================================
+[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m 
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m # --- STEP 1: POSTGRESQL SCHEMA & METADATA SYNC ---
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m echo "[1/4] Synchronizing PostgreSQL Local Catalog Matrix..."
+[?2004l[1/4] Synchronizing PostgreSQL Local Catalog Matrix...
+[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m 
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m psql -U "${DB_USER}" -d "${DB_NAME}" -c "
+[?2004l[?2004h> CREATE TABLE IF NOT EXISTS catalog_ledger (
+[?2004l[?2004h>     id SERIAL PRIMARY KEY,
+[?2004l[?2004h>     song_title VARCHAR(255) NOT NULL,
+[?2004l[?2004h>     ascap_id VARCHAR(50) DEFAULT '938682392',
+[?2004l[?2004h>     isrc_code VARCHAR(50),
+[?2004l[?2004h>     tuning_protocol VARCHAR(50) DEFAULT '432Hz Tactical',
+[?2004l[?2004h>     air_protocol VARCHAR(50) DEFAULT '12kHz Air Protocol',
+[?2004l[?2004h>     lock_status VARCHAR(20) DEFAULT '10.0 LOCK',
+[?2004l[?2004h>     prompt_matrix_path TEXT,
+[?2004l[?2004h>     stem_vault_path TEXT,
+[?2004l[?2004h>     vocal_pass_path TEXT,
+[?2004l[?2004h>     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+[?2004l[?2004h> );
+[?2004l[?2004h> " || echo "[!] PostgreSQL connection bypassed or running in offline mode."
+[?2004lpsql: error: connection to server on socket "/data/data/com.termux/files/usr/tmp/.s.PGSQL.5432" failed: FATAL:  database "hangar700_matrix" does not exist
+[!] PostgreSQL connection bypassed or running in offline mode.
+[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m 
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m # --- STEP 2: PROMPT MATRIX DIRECTORY INITIALIZATION ---
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m echo "[2/4] Archiving Bracketed Prompt Matrices..."
+[?2004l[2/4] Archiving Bracketed Prompt Matrices...
+[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m 
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m cat << 'EOF' > "${PROMPTS_DIR}/10.0_LOCK_MASTER_TEMPLATE.txt"
+[?2004l[?2004h> [Style: 432Hz tactical tuning, 12kHz air protocol vocal clarity, 8D binaural spatial processing, Hard Tune pitch correction, Industrial phonk, cinematic trap, Direct X 10 metallic texture, obsidian sub-bass]
+[?2004l[?2004h> 
+[?2004l[?2004h> [Intro - 432Hz Ambient Build]
+[?2004l[?2004h> [Beat Drop - Heavy Sub-Bass Rumble]
+[?2004l[?2004h> [Verse 1 - Crisp Cadence, Hard Tune]
+[?2004l[?2004h> [Pre-Chorus - Rising Tension]
+[?2004l[?2004h> [Chorus - High Energy, 12kHz Air Protocol]
+[?2004l[?2004h> [Verse 2 - Melodic Rap, Direct X 10 Texture]
+[?2004l[?2004h> [Instrumental Break - Cello and Pipe Organ]
+[?2004l[?2004h> [Bridge - Stripped Down, Raw Vocals]
+[?2004l[?2004h> [Chorus - Maximum Amplification]
+[?2004l[?2004h> [Outro - Fading 8D Binaural Echo]
+[?2004l[?2004h> EOF
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m 
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m # --- STEP 3: DATABASE DUMP & SHA-256 INTEGRITY CHECKS ---
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m echo "[3/4] Exporting Database Dump & SHA-256 Verification Checksums..."
+[?2004l[3/4] Exporting Database Dump & SHA-256 Verification Checksums...
+[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m 
+[?2004l[?2004h[0;32m~/.../01_In_Development/Track_01[0m [0;97m$[0m if command -v pg_dump &> /dev/null; then
+[?2004l[?2004h>     pg_dump
+[?2004l[?2004h> [K> [K> # 1. Initialize the missing database
+[?2004l[?2004h> createdb hangar700_matrix
+[?2004l[?2004h> 
+[?2004l[?2004h> # (Alternative if createdb isn't in path):
+[?2004l[?2004h> # psql -c "CREATE DATABASE hangar700_matrix;"
+[?2004l[?2004h> 
+[?2004l[?2004h> # 2. Re-run your backup script
+[?2004l[?2004h> ~/hangar700_backup.sh
+[?2004l[?2004h> [K> [K> 
